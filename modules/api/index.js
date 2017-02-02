@@ -1,6 +1,6 @@
 import express from 'express';
 import { ParseServer } from 'parse-server';
-import bodyParser from 'body-parser';
+// import bodyParser from 'body-parser';
 
 import parseDashboard from '../dashboard';
 
