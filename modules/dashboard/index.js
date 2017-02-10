@@ -4,7 +4,6 @@ const port = process.env.PORT || 9090;
 
 // Configure ParseDashboard
 const dashboard = new ParseDashboard({
-    allowInsecureHTTP: true,
     apps: [
         {
             serverURL: process.env.PARSE_SERVER_URL || `http://localhost:${port}/parse`,
@@ -20,6 +19,6 @@ const dashboard = new ParseDashboard({
         }
     ],
     trustProxy: 1
-}, true);
+});
 
 export default dashboard;
