@@ -1,4 +1,7 @@
 import http from 'https';
+import q from 'q';
+
+const Product = Parse.Object.extend('Product');
 
 const options = {
     'method': 'POST',
@@ -45,14 +48,39 @@ export function rest(product) {
 }
 
 export default (rawProduct) => {
-    let Product = Parse.Object.extend('Product');
-    let product = new Product();
+    let deferred = q.defer();
+    // let product = new Product();
 
-    product.set('price', rawProduct.price * 100);
-    product.set('box', parseInt(rawProduct.box));
-    product.set('master', parseInt(rawProduct.master));
-    product.set('ean', parseInt(rawProduct.ean));
-    product.set('price', parseInt(rawProduct.price));
+    let query = new Parse.Query(Product);
+    query.equalTo('sku', rawProduct.sku);
+    query.first({
+        success: foundProduct => {
+            let product = foundProduct ? foundProduct : new Product();
 
-    return product;
+            product.set('sku', rawProduct.sku);
+            product.set('code', rawProduct.code);
+            product.set('description', rawProduct.description);
+            product.set('box', parseInt(rawProduct.box));
+            product.set('master', parseInt(rawProduct.master));
+            product.set('unit', rawProduct.unit);
+            product.set('ean', parseInt(rawProduct.ean));
+            product.set('price', rawProduct.price * 100);
+            product.set('brand', rawProduct.brand);
+
+            // deferred.resolve(product);
+            console.log(`Saving ${product.get('sku')}...`);
+            product.save()
+                .then(savedProduct => {
+                    console.log(`Product ${product.get('sku')} successfully saved!`);
+                    deferred.resolve(savedProduct);
+                });
+
+        },
+        error: error => {
+            console.error(`Error: ${error.code} ${error.message}`);
+            deferred.reject(error);
+        }
+    });
+
+    return deferred.promise;
 }
