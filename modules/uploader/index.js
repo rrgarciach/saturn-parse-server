@@ -32,7 +32,25 @@ export default function (app) {
             .parse({objectMode: true, headers: true})
             .on('data', function (product) {
                 console.log(`Parsing ${product.sku}...`, `${++count} products parsed.`);
-                products.push(importProduct(product));
+                products.push(importProduct(product))
+                // importProduct(product)
+                //     .then(product => {
+                //         products.push(product);
+                //         ++count;
+                //         if (count % 100 === 0) {
+                //             let productsToSave = products;
+                //             let promise = Parse.Object.saveAll(productsToSave, {
+                //                 success: () => {
+                //                     console.log(`Saved ${productsToSave.length} products.`);
+                //                 },
+                //                 error: err => {
+                //                     console.error(err);
+                //                 }
+                //             });
+                //             promises.push(promise);
+                //             products = [];
+                //         }
+                //     });
             })
             .on('error', function (error) {
                 console.log('error', error);
@@ -62,7 +80,8 @@ export default function (app) {
                 //
                 // }
 
-                q.all(products)
+                // q.all(promises)
+                q.all(promises)
                     .then(() => {
                         console.log('done');
                         // res.status(202).end();
@@ -103,6 +122,7 @@ export default function (app) {
             });
 
         stream.pipe(csvStream);
+        res.status(202).end();
 
     });
 };
