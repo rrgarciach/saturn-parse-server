@@ -5,7 +5,7 @@ import Item from '../models/item.model';
 Parse.Object.registerSubclass('Item', Item);
 // require('../models/order.model');
 
-Parse.Cloud.beforeSave('Order', (request, response) => {
+Parse.Cloud.afterSave(Order, (request, response) => {
 
     let order = request.object;
 
@@ -46,13 +46,7 @@ function calcOrderTotals(order) {
     itemsRelation.query().include('product').find()
         .then(items => {
             let totals = 0;
-            // for (let i = 0; i < order.get('items'); ++i) {
-            //     totals += items[i].totals;
-            // }
             order.items = items;
-            console.log('ITEMS', order.items.length);
-            console.log('ITEMS 1', order.items[0].totals);
-            console.log('TOTALS', order.subtotals, order.ivaTotals, order.discountTotals, order.totals);
             order.set('subtotals', order.subtotals * 100);
             order.set('ivaTotals', order.ivaTotals * 100);
             order.set('discountTotals', order.discountTotals * 100);

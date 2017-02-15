@@ -28,7 +28,6 @@ export default class Order extends Parse.Object {
     get subtotals() {
         let subtotals = 0;
         for (let i = 0; i < this.items.length; ++i) {
-            console.log(this.items[i].subtotals);
             subtotals += this.items[i].subtotals;
         }
         return subtotals;
