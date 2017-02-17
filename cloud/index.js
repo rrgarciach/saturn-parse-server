@@ -9,32 +9,37 @@ Parse.Cloud.afterSave(Order, (request, response) => {
 
     let order = request.object;
 
-    calcOrderTotals(order)
-        .then(order => {
+    if (order.user !== undefined) {
+        calcOrderTotals(order)
+            .then(order => {
 
-            if (!order.get('folio')) {
+                if (!order.get('folio')) {
 
-                let query = new Parse.Query(Order);
-                query.limit(1);
-                query.descending('folio');
-                query.find()
-                    .then(orders => {
-                        let maxValue = orders[0].get('folio');
-                        order.set('folio', ++maxValue);
-                        order.save()
-                            .then(() => {
-                                response.success();
-                            });
+                    let query = new Parse.Query(Order);
+                    query.limit(1);
+                    query.descending('folio');
+                    query.find()
+                        .then(orders => {
+                            let maxValue = orders[0].get('folio');
+                            order.set('folio', ++maxValue);
+                            order.save()
+                                .then(() => {
+                                    response.success();
+                                });
 
-                    });
-                // response.error('you cannot give less than one star');
+                        });
+                    // response.error('you cannot give less than one star');
 
-            } else {
-                response.success();
+                } else {
+                    order.save()
+                        .then(() => {
+                            response.success();
+                        });
 
-            }
+                }
 
-        });
+            });
+    }
 
 
 });
