@@ -3,13 +3,14 @@ const q = require('q');
 import Order from '../models/order.model';
 import Item from '../models/item.model';
 Parse.Object.registerSubclass('Item', Item);
+Parse.Object.registerSubclass('Order', Order);
 // require('../models/order.model');
 
 Parse.Cloud.afterSave(Order, (request, response) => {
 
     let order = request.object;
 
-    if (order.user !== undefined) {
+    if (request.user) {
         calcOrderTotals(order)
             .then(order => {
 
@@ -50,13 +51,11 @@ function calcOrderTotals(order) {
     let itemsRelation = order.relation('items');
     itemsRelation.query().include('product').find()
         .then(items => {
-            let totals = 0;
             order.items = items;
-            order.set('subtotals', order.subtotals * 100);
-            order.set('ivaTotals', order.ivaTotals * 100);
-            order.set('discountTotals', order.discountTotals * 100);
+            order.set('subtotals', order.subtotals);
+            order.set('ivaTotals', order.ivaTotals);
+            order.set('discountTotals', order.discountTotals);
             order.set('totals', order.totals);
-
             deferred.resolve(order);
         });
 

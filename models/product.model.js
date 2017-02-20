@@ -1,4 +1,4 @@
-import Parse from 'parse';
+// import Parse from 'parse';
 
 export default class Product extends Parse.Object {
 
@@ -11,11 +11,11 @@ export default class Product extends Parse.Object {
     }
 
     get price() {
-        return this.get('price') / 100;
+        return this.get('price');
     }
 
     set price(value) {
-        this.set('price', value * 100);
+        this.set('price', value);
     }
 
 }

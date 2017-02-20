@@ -25,6 +25,13 @@ export default class Order extends Parse.Object {
         return this._items || [];
     }
 
+    removeItem(item) {
+        this.items.splice(item.$key, 1);
+        if (item.id) { // Check if Item was already saved before:
+            this.relation('items').remove(item); // remove from relation.
+        }
+    }
+
     get subtotals() {
         let subtotals = 0;
         for (let i = 0; i < this.items.length; ++i) {

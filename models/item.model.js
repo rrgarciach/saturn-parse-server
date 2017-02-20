@@ -1,4 +1,4 @@
-import Parse from 'parse';
+// import Parse from 'parse';
 
 export default class Item extends Parse.Object {
 
@@ -40,11 +40,11 @@ export default class Item extends Parse.Object {
     }
 
     get price() {
-        return this.get('price') / 100;
+        return this.get('price');
     }
 
     set price(value) {
-        this.set('price', value * 100);
+        this.set('price', value);
     }
 
     get subtotals() {
@@ -56,11 +56,12 @@ export default class Item extends Parse.Object {
     }
 
     get discount() {
-        return this.get('discount') / 100;
+
+        return this.get('discount');
     }
 
     set discount(value) {
-        this.set('discount', value * 100);
+        this.set('discount', value);
     }
 
     get discountValue() {
