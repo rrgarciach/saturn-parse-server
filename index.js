@@ -12,5 +12,6 @@ api(app);
 uploader(app);
 
 app.listen(port, function() {
+    require('./migrations')();
     console.info(appName + ' running on port ' + port + '.');
 });
