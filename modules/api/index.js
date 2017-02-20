@@ -12,7 +12,7 @@ const parseServerCloudCodeMain = process.env.PARSE_SERVER_CLOUD_CODE_MAIN || './
 const parseServerDatabaseURI = process.env.PARSE_SERVER_DATABASE_URI || 'mongodb://heroku_2qpf9541:7q4331b1e1m4qbdg43brp5jop3@ds139879.mlab.com:39879/heroku_2qpf9541';
 const parseServerFacebookAppIDS = process.env.PARSE_SERVER_FACEBOOK_APP_IDS || '';
 
-const appName = process.env.APP_NAME || 'Saturn';
+const appName = process.env.APP_NAME || 'Saturn-Parse-Server-Dev';
 
 // Configure ParseServer
 const parseAPI = new ParseServer({
@@ -29,13 +29,39 @@ const parseAPI = new ParseServer({
     },
     // filesAdapter: s3FileAdapter,
     publicServerURL: parseServerURL,
+    verifyUserEmails: true,
     appName: appName,
     emailAdapter: {
     	module: 'parse-server-simple-mailgun-adapter',
+        // module: 'parse-server-mailgun',
+        // http://stackoverflow.com/questions/37095172/parse-server-simple-mailgun-adapter-verifyuseremails-issue
     	options: {
-    		fromAddress: 'correo@distribuidoragc.com',
-    		domain: 'distribuidoragc.com',
-    		apiKey: 'key-7df1233ff40d9551ce285af288234796',
+    		fromAddress: 'noreply@distribuidoragc.com',
+    		domain: 'app9a8764640c73432cb668fc126ae80ea8.mailgun.org',
+            recipient: 'rrgarciach@gmail.com',
+            // username: 'Distribuidora GC',
+    		apiKey: process.env.MAILGUN_API_KEY || 'key-a7af7309d698c60ff11a94949af04d59',
+            // templates: {
+            //     passwordResetEmail: {
+            //         subject: 'Reset your password',
+            //         pathPlainText: resolve(__dirname, 'path/to/templates/password_reset_email.txt'),
+            //         pathHtml: resolve(__dirname, 'path/to/templates/password_reset_email.html'),
+            //         callback: (user) => { return { firstName: user.get('firstName') }}
+            //         // Now you can use {{firstName}} in your templates
+            //     },
+            //     verificationEmail: {
+            //         subject: 'Confirm your account',
+            //         pathPlainText: resolve(__dirname, 'path/to/templates/verification_email.txt'),
+            //         pathHtml: resolve(__dirname, 'path/to/templates/verification_email.html'),
+            //         callback: (user) => { return { firstName: user.get('firstName') }}
+            //         // Now you can use {{firstName}} in your templates
+            //     },
+            //     customEmailAlert: {
+            //         subject: 'Urgent notification!',
+            //         pathPlainText: resolve(__dirname, 'path/to/templates/custom_alert.txt'),
+            //         pathHtml: resolve(__dirname, 'path/to/templates/custom_alert.html'),
+            //     }
+            // }
     	}
     }
 });
