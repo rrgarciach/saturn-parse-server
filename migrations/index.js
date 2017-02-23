@@ -1,7 +1,6 @@
 const Migration = Parse.Object.extend('Migration');
 
 let normalizedPath = require('path').join(__dirname, '/');
-console.log(normalizedPath)
 
 let migrations = [];
 let migrationsNames = [];

@@ -1,4 +1,4 @@
-import express from 'express';
+const express = require('express');
 
 import api from './modules/api';
 import uploader from './modules/uploader';

@@ -4,66 +4,42 @@ import { ParseServer } from 'parse-server';
 
 import parseDashboard from '../dashboard';
 
-const port = process.env.PORT || 9090;
-const parseServerApplicationID = process.env.PARSE_SERVER_APPLICATION_ID || 'saturn-id';
-const parseServerMasterKey = process.env.PARSE_SERVER_MASTER_KEY || 'saturn-master-key';
-const parseServerURL = process.env.PARSE_SERVER_URL || 'http://localhost:' + port + '/parse';
-const parseServerCloudCodeMain = process.env.PARSE_SERVER_CLOUD_CODE_MAIN || './cloud';
-const parseServerDatabaseURI = process.env.PARSE_SERVER_DATABASE_URI || 'mongodb://heroku_2qpf9541:7q4331b1e1m4qbdg43brp5jop3@ds139879.mlab.com:39879/heroku_2qpf9541';
-const parseServerFacebookAppIDS = process.env.PARSE_SERVER_FACEBOOK_APP_IDS || '';
-
-const appName = process.env.APP_NAME || 'Saturn-Parse-Server-Dev';
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+const CONFIG = require('../../config/environment');
 
 // Configure ParseServer
 const parseAPI = new ParseServer({
-    databaseURI: parseServerDatabaseURI,
-    serverURL: parseServerURL,
-    cloud: parseServerCloudCodeMain,
-    appId : parseServerApplicationID,
-    masterKey: parseServerMasterKey,
+    databaseURI: CONFIG.PARSE_SERVER.DATABASE_URL,
+    serverURL: CONFIG.PARSE_SERVER.URL,
+    cloud: CONFIG.PARSE_SERVER.CLOUD_CODE_MAIN,
+    appId : CONFIG.PARSE_SERVER.APPLICATION_ID,
+    masterKey: CONFIG.PARSE_SERVER.MASTER_KEY,
     auth: {
         facebook:
             {
-                appIds: [parseServerFacebookAppIDS]
+                appIds: [CONFIG.PARSE_SERVER.DATABASE_URL]
             }
     },
     // filesAdapter: s3FileAdapter,
-    publicServerURL: parseServerURL,
+    publicServerURL: CONFIG.PARSE_SERVER.URL,
+    appName: CONFIG.PARSE_SERVER.APP_NAME,
+    allowClientClassCreation: false,
+    sessionLength: 5 * 60 * 60,
+    accountLockout: {
+        duration: 5, // duration policy setting determines the number of minutes that a locked-out account remains locked out before automatically becoming unlocked. Set it to a value greater than 0 and less than 100000.
+        threshold: 3, // threshold policy setting determines the number of failed sign-in attempts that will cause a user account to be locked. Set it to an integer value greater than 0 and less than 1000.
+    },
     verifyUserEmails: true,
-    appName: appName,
-    emailAdapter: {
-    	module: 'parse-server-simple-mailgun-adapter',
-        // module: 'parse-server-mailgun',
-        // http://stackoverflow.com/questions/37095172/parse-server-simple-mailgun-adapter-verifyuseremails-issue
-    	options: {
-    		fromAddress: 'noreply@distribuidoragc.com',
-    		domain: 'app9a8764640c73432cb668fc126ae80ea8.mailgun.org',
-            recipient: 'rrgarciach@gmail.com',
-            // username: 'Distribuidora GC',
-    		apiKey: process.env.MAILGUN_API_KEY || 'key-a7af7309d698c60ff11a94949af04d59',
-            // templates: {
-            //     passwordResetEmail: {
-            //         subject: 'Reset your password',
-            //         pathPlainText: resolve(__dirname, 'path/to/templates/password_reset_email.txt'),
-            //         pathHtml: resolve(__dirname, 'path/to/templates/password_reset_email.html'),
-            //         callback: (user) => { return { firstName: user.get('firstName') }}
-            //         // Now you can use {{firstName}} in your templates
-            //     },
-            //     verificationEmail: {
-            //         subject: 'Confirm your account',
-            //         pathPlainText: resolve(__dirname, 'path/to/templates/verification_email.txt'),
-            //         pathHtml: resolve(__dirname, 'path/to/templates/verification_email.html'),
-            //         callback: (user) => { return { firstName: user.get('firstName') }}
-            //         // Now you can use {{firstName}} in your templates
-            //     },
-            //     customEmailAlert: {
-            //         subject: 'Urgent notification!',
-            //         pathPlainText: resolve(__dirname, 'path/to/templates/custom_alert.txt'),
-            //         pathHtml: resolve(__dirname, 'path/to/templates/custom_alert.html'),
-            //     }
-            // }
-    	}
-    }
+    emailVerifyTokenValidityDuration: 2 * 60 * 60, // in seconds (2 hours = 7200 seconds)
+    preventLoginWithUnverifiedEmail: true,
+    resetTokenValidityDuration: 5 * 60 * 60, // expire after 5 hours
+    emailAdapter: require('../smtp-adapter'),
+    customPages: {
+        invalidLink: '/views/invalid_link.html',
+        passwordResetSuccess: '/views/password_reset_success.html',
+        verifyEmailSuccess: '/views/verify_email_success.html',
+    },
+
 });
 
 export default (app) => {
