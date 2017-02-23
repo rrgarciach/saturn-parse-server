@@ -11,8 +11,8 @@ const CONFIG = require('../../config/environment');
 const parseAPI = new ParseServer({
     databaseURI: CONFIG.PARSE_SERVER.DATABASE_URL,
     serverURL: CONFIG.PARSE_SERVER.URL,
-    cloud: CONFIG.PARSE_SERVER.CLOUD_CODE_MAIN,
-    appId : CONFIG.PARSE_SERVER.APPLICATION_ID,
+    cloud: CONFIG.PARSE_SERVER.CLOUD_CODE_MAIN || './cloud',
+    appId : CONFIG.PARSE_SERVER.APPLICATION_ID || '',
     masterKey: CONFIG.PARSE_SERVER.MASTER_KEY,
     auth: {
         facebook:

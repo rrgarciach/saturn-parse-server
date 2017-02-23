@@ -8,7 +8,7 @@ const all = {
         MASTER_KEY: process.env.PARSE_SERVER_MASTER_KEY,
         URL: process.env.PARSE_SERVER_URL,
         CLOUD_CODE_MAIN: process.env.PARSE_SERVER_CLOUD_CODE_MAIN,
-        DATABASE_URL: process.env.PARSE_SERVER_DATABASE_URI,
+        DATABASE_URL: process.env.PARSE_SERVER_DATABASE_URI || process.env.MONGODB_URI,
         FACEBOOK_APP_IDS: process.env.PARSE_SERVER_FACEBOOK_APP_IDS,
     },
 
