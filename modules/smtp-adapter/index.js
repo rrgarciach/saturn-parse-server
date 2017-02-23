@@ -4,7 +4,7 @@ const emailAdapter = {
     module: 'simple-parse-smtp-adapter',
     options: {
         fromAddress: CONFIG.SMTP_ADAPTER.FROM_ADDRESS,
-        user: CONFIG.SMTP_ADAPTER.EMAUL_USER,
+        user: CONFIG.SMTP_ADAPTER.EMAIL_USER,
         password: CONFIG.SMTP_ADAPTER.PASSWORD,
         host: CONFIG.SMTP_ADAPTER.HOST,
         isSSL: CONFIG.SMTP_ADAPTER.IS_SSL, //True or false if you are using ssl

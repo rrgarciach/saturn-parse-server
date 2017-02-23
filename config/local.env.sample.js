@@ -14,7 +14,7 @@ module.exports = {
 
     SMTP_ADAPTER: {
         FROM_ADDRESS: 'mail@email.com',
-        EMAUL_USER: 'mail@demail.com',
+        EMAUL_USEREMAIL_USER: 'mail@demail.com',
         PASSWORD: 'password',
         HOST: 'yourhost.com',
         IS_SSL: true, //True or false if you are using ssl

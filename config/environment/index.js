@@ -14,7 +14,7 @@ const all = {
 
     SMTP_ADAPTER: {
         FROM_ADDRESS: process.env.FROM_ADDRESS,
-        EMAUL_USER: process.env.USER,
+        EMAIL_USER: process.env.USER,
         PASSWORD: process.env.PASSWORD,
         HOST: process.env.HOST,
         IS_SSL: process.env.IS_SSL,
