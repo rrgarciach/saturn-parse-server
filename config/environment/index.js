@@ -13,13 +13,13 @@ const all = {
     },
 
     SMTP_ADAPTER: {
-        FROM_ADDRESS: process.env.FROM_ADDRESS,
-        EMAIL_USER: process.env.USER,
-        PASSWORD: process.env.PASSWORD,
-        HOST: process.env.HOST,
-        IS_SSL: process.env.IS_SSL,
-        PORT: process.env.PORT,
-        NAME: process.env.NAME,
+        FROM_ADDRESS: process.env.SMTP_ADAPTER_FROM_ADDRESS,
+        EMAIL_USER: process.env.SMTP_ADAPTER_USER,
+        PASSWORD: process.env.SMTP_ADAPTER_PASSWORD,
+        HOST: process.env.SMTP_ADAPTER_HOST,
+        IS_SSL: process.env.SMTP_ADAPTER_IS_SSL,
+        PORT: process.env.SMTP_ADAPTER_PORT,
+        NAME: process.env.SMTP_ADAPTER_NAME,
         // EMAIL_FIELD: process.env.EMAIL_FIELD,
     },
 
