@@ -1,7 +1,3 @@
-// import Parse from 'parse';
-
-import Client from './client.model';
-
 export default class Order extends Parse.Object {
 
     constructor(data) {
@@ -17,12 +13,32 @@ export default class Order extends Parse.Object {
         return this.get('client');
     }
 
+    get folio() {
+        return this.get('folio');
+    }
+
+    get status() {
+        return this.get('status');
+    }
+
     set items(_items) {
         this._items = _items;
     }
 
     get items() {
         return this._items || [];
+    }
+
+    get notes() {
+        return this.get('notes');
+    }
+
+    set notes(notes) {
+        this.set('notes', notes);
+    }
+
+    get date() {
+        return this.createdAt;
     }
 
     removeItem(item) {
@@ -58,6 +74,10 @@ export default class Order extends Parse.Object {
 
     get totals() {
         return this.subtotals + this.discountTotals + this.ivaTotals;
+    }
+
+    isEditable() {
+        return this.status > 1;
     }
 }
 

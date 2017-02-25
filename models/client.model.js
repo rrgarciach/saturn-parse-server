@@ -1,5 +1,3 @@
-import Parse from 'parse';
-
 export default class Client extends Parse.Object {
 
     constructor(data) {
@@ -11,16 +9,28 @@ export default class Client extends Parse.Object {
         }
     }
 
+    get folio() {
+        return this.get('folio');
+    }
+
+    set folio(folio) {
+        this.set('folio', folio);
+    }
+
     get profile() {
         return this.get('profile');
     }
 
-    get address() {
-        return this.get('profile').get('address');
+    set profile(profile) {
+        this.set('profile', profile);
     }
 
     get fullName() {
-        return `${this.profile.get('firstName')} ${this.profile.get('lastName')}`;
+        return this.profile.fullName;
+    }
+
+    get rfc() {
+        return this.profile.rfc;
     }
 }
 
