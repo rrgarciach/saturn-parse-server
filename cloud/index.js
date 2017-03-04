@@ -19,9 +19,10 @@ Parse.Cloud.afterSave(Order, (request, response) => {
                     let query = new Parse.Query(Order);
                     query.limit(1);
                     query.descending('folio');
-                    query.find()
-                        .then(orders => {
-                            let maxValue = orders[0].get('folio');
+                    query.first()
+                        .then(_order => {
+                            console.log('order', _order, _order.get('folio'), _order.folio)
+                            let maxValue = _order.get('folio');
                             order.set('folio', ++maxValue);
                             order.save()
                                 .then(() => {

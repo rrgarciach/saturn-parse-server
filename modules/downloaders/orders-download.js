@@ -10,7 +10,7 @@ function handleError(err, req, res) {
 
 module.exports = function (app) {
 
-    app.get('/orders/export/:folio', function (req, res) {
+    app.get('/orders/export/txt/:folio', function (req, res) {
 
         const folio = parseInt(req.params.folio);
         let query = new Parse.Query(Order);
