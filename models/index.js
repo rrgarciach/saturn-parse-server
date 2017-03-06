@@ -14,4 +14,4 @@ module.exports = function () {
     Parse.Object.registerSubclass('Product', Product);
     Parse.Object.registerSubclass('Profile', Profile);
 
-}
+};

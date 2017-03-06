@@ -1,6 +1,6 @@
-import express from 'express';
+const express = require('express');
+const bodyParser = require('body-parser');
 import { ParseServer } from 'parse-server';
-// import bodyParser from 'body-parser';
 
 import parseDashboard from '../dashboard';
 
@@ -43,6 +43,12 @@ const parseAPI = new ParseServer({
 });
 
 export default (app) => {
+    // parse application/x-www-form-urlencoded
+    app.use(bodyParser.urlencoded({ extended: false }));
+
+    // parse application/json
+    app.use(bodyParser.json());
+
     // Serve the Parse API on the /parse URL prefix
     app.use('/parse', parseAPI);
 
