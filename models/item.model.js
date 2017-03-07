@@ -71,6 +71,10 @@ export default class Item extends Parse.Object {
     get totals() {
         return this.subtotals - this.discountValue + this.iva;
     }
+
+    get status() {
+        return 'CAPTURADO';
+    }
 }
 
 Parse.Object.registerSubclass('Item', Item);

@@ -71,6 +71,7 @@ module.exports = function (app) {
         query.include('client');
         query.include('client.profile');
         query.include('client.profile.address');
+        query.include('client.promoter.profile');
         query.find({
             success: orders => {
 
