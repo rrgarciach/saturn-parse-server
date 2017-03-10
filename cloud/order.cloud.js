@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 import Order from '../models/order.model';
 import Client from '../models/client.model';
 
@@ -12,12 +14,19 @@ module.exports.load = () => {
             let sessionToken = req.user.get('sessionToken'); // get user session token
 
             // Set Order's ACL:
-            return setOrderACL(order)
+            return setOrderACL(order, sessionToken)
 
                 .then(order => {
 
                     // Calculate Order's totals:
-                    return calcOrderTotals(order);
+                    return calcOrderTotals(order, sessionToken);
+
+                })
+
+                .then(order => {
+
+                    // Set ACL for Order's Items:
+                    return setItemsACL(order, sessionToken);
 
                 })
 
@@ -57,7 +66,7 @@ module.exports.load = () => {
 
 };
 
-function setOrderACL(order) {
+function setOrderACL(order, sessionToken) {
     return new Promise((resolve, reject) => {
 
         let client = order.client;
@@ -66,7 +75,7 @@ function setOrderACL(order) {
             .equalTo('objectId', client.id)
             .include('promoter')
             .include('user')
-            .first()
+            .first({sessionToken: sessionToken})
             .then(client => {
                 if (!order.existed()) {
                     let orderACL = new Parse.ACL();
@@ -79,6 +88,7 @@ function setOrderACL(order) {
                     order.setACL(orderACL);
                 }
 
+                order.set('client', client);
                 resolve(order);
             });
 
@@ -86,12 +96,50 @@ function setOrderACL(order) {
 
 }
 
-function calcOrderTotals(order) {
+function setItemsACL(order, sessionToken) {
+    return new Promise((resolve, reject) => {
+
+        let client = order.client;
+        let items = order.items;
+
+        let itemACL = new Parse.ACL();
+        itemACL.setWriteAccess(client.user, true);
+        itemACL.setReadAccess(client.user, true);
+        itemACL.setWriteAccess(client.promoter.id, true);
+        itemACL.setReadAccess(client.promoter.id, true);
+        itemACL.setRoleReadAccess('Operations', true);
+        itemACL.setRoleWriteAccess('Operations', true);
+
+        _.each(items, item => {
+
+            if (!item.existed()) {
+                item.setACL(itemACL);
+            }
+
+        });
+
+        return Parse.Object.saveAll(items, {
+            sessionToken: sessionToken,
+            success: () => {
+                resolve(order);
+            },
+            error: error => {
+                console.error(error.message, error);
+            },
+        });
+
+    });
+
+}
+
+function calcOrderTotals(order, sessionToken) {
 
     return new Promise((resolve, reject) => {
 
         let itemsRelation = order.relation('items');
-        itemsRelation.query().include('product').find()
+        itemsRelation.query()
+            .include('product')
+            .find({sessionToken: sessionToken})
             .then(items => {
                 order.items = items;
                 order.set('subtotals', order.subtotals);
