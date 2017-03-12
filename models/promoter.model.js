@@ -25,6 +25,14 @@ export default class Promoter extends Parse.Object {
         this.set('profile', profile);
     }
 
+    get user() {
+        return this.get('user');
+    }
+
+    set user(user) {
+        this.set('user', user);
+    }
+
     get fullName() {
         return this.profile.fullName;
     }
