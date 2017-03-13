@@ -73,6 +73,7 @@ module.exports = function (app) {
         query.include('client.profile.address');
         query.include('client.promoter.profile');
         query.find({
+            useMasterKey: true,
             success: orders => {
 
                 let itemsPromises = [];
@@ -80,6 +81,7 @@ module.exports = function (app) {
                 _.each(orders, order => {
                     let items = order.relation('items');
                     let promise = items.query().include('product').find({
+                        useMasterKey: true,
                         success: _items => {
                             order.items = _items;
                         },

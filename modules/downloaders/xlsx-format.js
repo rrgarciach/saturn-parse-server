@@ -25,16 +25,16 @@ module.exports.generateFiles = (orders, filename) => {
     let dayTotals = 0;
 
     _.each(orders, (order, key) => {
-            worksheet.addRow([++rowKey, 'FACTURA', '', order.client.folio, order.client.fullName, '', '', '', 'FECHA', order.date]);
-            worksheet.addRow([++rowKey, 'FOLIO', order.folio, 'NOTAS:', order.notes, '', '', '', 'VEND:', order.client.promoter.fullName]);
-            worksheet.addRow([++rowKey, 'CODIGO', 'CANT.', 'EXIST.', 'CONCEPTO', 'PU', 'IVA', 'DESC.', 'STL', 'ESTATUS']);
+        worksheet.addRow([++rowKey, 'FACTURA', '', order.client.folio, order.client.fullName, '', '', '', 'FECHA', order.date]);
+        worksheet.addRow([++rowKey, 'FOLIO', order.folio, 'NOTAS:', order.notes, '', '', '', 'VEND:', order.client.promoter.fullName]);
+        worksheet.addRow([++rowKey, 'CODIGO', 'CANT.', 'EXIST.', 'CONCEPTO', 'PU', 'IVA', 'DESC.', 'STL', 'ESTATUS']);
         _.each(order.items, (item, key) => {
-            worksheet.addRow([++rowKey, item.sku, item.quantity, '', item.description, item.price/100, item.iva/100, item.discountValue/100, item.totals/100, order.status]);
+            worksheet.addRow([++rowKey, item.sku, item.quantity, '', item.description, item.price / 100, item.iva / 100, item.discountValue / 100, item.totals / 100, order.status]);
             dayTotals += order.totals;
         });
-            worksheet.addRow([++rowKey, '', '', '', '', '', '', 'TOTAL:', order.totals/100, '']);
-            worksheet.addRow([++rowKey]);
-            worksheet.addRow([++rowKey, '', '', '', '', '', 'TOTAL DEL DIA:', '', dayTotals/100, '']);
+        worksheet.addRow([++rowKey, '', '', '', '', '', '', 'TOTAL:', order.totals / 100, '']);
+        worksheet.addRow([++rowKey]);
+        worksheet.addRow([++rowKey, '', '', '', '', '', 'TOTAL DEL DIA:', '', dayTotals/100, '']);
     });
 
     return workbook.xlsx.writeFile(filename);
