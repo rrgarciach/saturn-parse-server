@@ -79,6 +79,9 @@ module.exports = function (app) {
                 let itemsPromises = [];
 
                 _.each(orders, order => {
+                    // Set to status 2 only if not been changed before:
+                    if (order.get('status') < 2) order.set('status', 2);
+
                     let items = order.relation('items');
                     let promise = items.query().include('product').find({
                         useMasterKey: true,
@@ -101,6 +104,7 @@ module.exports = function (app) {
                                 res.on('finish', () => {
                                     fs.unlinkSync(filename);
                                 });
+                                Parse.Object.saveAll(orders, {useMasterKey: true});
                             });
                     });
             },

@@ -32,16 +32,30 @@ module.exports.load = () => {
 
                 .then(order => {
 
+                    userHasRole(req.user, 'Operations', {sessionToken: sessionToken})
+                        .then(hasRole => {
+
+                            // Check if User has Role/privileges to change status:
+                            if (!hasRole) {
+                                order.unset('status');
+                            }
+                            return Promise.resolve();
+
+                        })
+
+                })
+
+                .then(order => {
+
                     // Check if Order has already a folio:
                     if (!order.get('folio')) {
 
                         // Set Order's folio:
                         let query = new Parse.Query(Order);
-                        query.limit(1);
                         query.descending('folio');
-                        query.first()
+                        query.first({useMasterKey: true})
                             .then(_order => {
-                                let maxValue = _order.get('folio');
+                                let maxValue = _order.get('folio') ? _order.get('folio') : 0;
                                 order.set('folio', ++maxValue);
                                 order.save(null, {sessionToken: sessionToken})
                                     .then(() => {
@@ -151,4 +165,36 @@ function calcOrderTotals(order, sessionToken) {
 
     });
 
+}
+
+function userHasRole(user, roleName, options = {}) {
+    return new Promise((resolve, reject) => {
+
+        if (user) {
+
+            let queries = [
+                new Parse.Query('_Role').equalTo('users', user)
+            ];
+            // Maximum depth is 3, after that we get a "" error from Parse
+            for (let i = 0; i < 2; i++) {
+                queries.push(new Parse.Query('_Role').matchesQuery('roles', queries[i]));
+            }
+
+            Parse.Query.or.apply(Parse.Query, queries)
+                .find(options)
+                .then(roles => {
+                    _.each(roles, role => {
+                        if (role.get('name') === roleName) {
+                            resolve(true);
+                        }
+                        resolve(false);
+
+                    });
+                });
+
+        }
+
+        resolve();
+
+    });
 }
