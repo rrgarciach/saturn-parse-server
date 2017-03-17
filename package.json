@@ -3,7 +3,7 @@
   "description": "Saturn Parse Server",
   "author": "Ruy R. Garcia",
   "license": "ISC",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "index.js",
   "engines": {
     "node": "^4.4.0",
