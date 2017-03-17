@@ -24,7 +24,7 @@ module.exports.down = () => {
     console.info('Rolling Models Creation...');
     try {
 
-        MongoClient.connect(ONFIG.PARSE_SERVER.DATABASE_URL, (err, db) => {
+        MongoClient.connect(CONFIG.PARSE_SERVER.DATABASE_URL, (err, db) => {
             assert.equal(null, err);
 
             removeModelDocuments(db, () => {

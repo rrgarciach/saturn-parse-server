@@ -26,6 +26,7 @@ module.exports.up = () => {
     roles.push(adminRole);
 
     return Parse.Object.saveAll(roles, {
+        useMasterKey: true,
         success: results => {
             try {
 

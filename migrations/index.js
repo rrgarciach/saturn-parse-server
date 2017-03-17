@@ -27,7 +27,7 @@ function run(scripts, index) {
             .then(() => {
                 let migration = new Migration();
                 migration.set('script', migrationsNames[i]);
-                migration.save()
+                migration.save(null, {useMasterKey: true})
                     .then(() => {
                         run(scripts, ++i);
                     });
