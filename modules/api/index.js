@@ -1,46 +1,54 @@
-import express from 'express';
+const express = require('express');
+const bodyParser = require('body-parser');
 import { ParseServer } from 'parse-server';
-import bodyParser from 'body-parser';
 
 import parseDashboard from '../dashboard';
 
-const port = process.env.PORT || 9090;
-const parseServerApplicationID = process.env.PARSE_SERVER_APPLICATION_ID || 'saturn-id';
-const parseServerMasterKey = process.env.PARSE_SERVER_MASTER_KEY || 'saturn-master-key';
-const parseServerURL = process.env.PARSE_SERVER_URL || 'http://localhost:' + port + '/parse';
-const parseServerCloudCodeMain = process.env.PARSE_SERVER_CLOUD_CODE_MAIN || './cloud';
-const parseServerDatabaseURI = process.env.PARSE_SERVER_DATABASE_URI || 'mongodb://heroku_2qpf9541:7q4331b1e1m4qbdg43brp5jop3@ds139879.mlab.com:39879/heroku_2qpf9541';
-const parseServerFacebookAppIDS = process.env.PARSE_SERVER_FACEBOOK_APP_IDS || '';
-
-const appName = process.env.APP_NAME || 'Saturn';
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+const CONFIG = require('../../config/environment');
 
 // Configure ParseServer
 const parseAPI = new ParseServer({
-    databaseURI: parseServerDatabaseURI,
-    serverURL: parseServerURL,
-    cloud: parseServerCloudCodeMain,
-    appId : parseServerApplicationID,
-    masterKey: parseServerMasterKey,
+    databaseURI: CONFIG.PARSE_SERVER.DATABASE_URL,
+    serverURL: CONFIG.PARSE_SERVER.URL,
+    cloud: CONFIG.PARSE_SERVER.CLOUD_CODE_MAIN || './cloud',
+    appId : CONFIG.PARSE_SERVER.APPLICATION_ID || '',
+    masterKey: CONFIG.PARSE_SERVER.MASTER_KEY,
     auth: {
         facebook:
             {
-                appIds: [parseServerFacebookAppIDS]
+                appIds: [CONFIG.PARSE_SERVER.DATABASE_URL]
             }
     },
     // filesAdapter: s3FileAdapter,
-    publicServerURL: parseServerURL,
-    appName: appName,
-    emailAdapter: {
-    	module: 'parse-server-simple-mailgun-adapter',
-    	options: {
-    		fromAddress: 'correo@distribuidoragc.com',
-    		domain: 'distribuidoragc.com',
-    		apiKey: 'key-7df1233ff40d9551ce285af288234796',
-    	}
-    }
+    publicServerURL: CONFIG.PARSE_SERVER.URL,
+    appName: CONFIG.PARSE_SERVER.APP_NAME,
+    allowClientClassCreation: false,
+    sessionLength: 5 * 60 * 60,
+    accountLockout: {
+        duration: 5, // duration policy setting determines the number of minutes that a locked-out account remains locked out before automatically becoming unlocked. Set it to a value greater than 0 and less than 100000.
+        threshold: 3, // threshold policy setting determines the number of failed sign-in attempts that will cause a user account to be locked. Set it to an integer value greater than 0 and less than 1000.
+    },
+    verifyUserEmails: true,
+    emailVerifyTokenValidityDuration: 2 * 60 * 60, // in seconds (2 hours = 7200 seconds)
+    preventLoginWithUnverifiedEmail: true,
+    resetTokenValidityDuration: 5 * 60 * 60, // expire after 5 hours
+    emailAdapter: require('../smtp-adapter'),
+    customPages: {
+        invalidLink: '/views/invalid_link.html',
+        passwordResetSuccess: '/views/password_reset_success.html',
+        verifyEmailSuccess: '/views/verify_email_success.html',
+    },
+
 });
 
 export default (app) => {
+    // parse application/x-www-form-urlencoded
+    app.use(bodyParser.urlencoded({ extended: false }));
+
+    // parse application/json
+    app.use(bodyParser.json());
+
     // Serve the Parse API on the /parse URL prefix
     app.use('/parse', parseAPI);
 
