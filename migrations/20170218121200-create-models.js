@@ -41,17 +41,6 @@ module.exports.down = () => {
 function insertModelDocuments(db, callback) {
     db.collection('_SCHEMA').insertMany([
             {
-                "_id": "_User",
-                "objectId": "string",
-                "updatedAt": "date",
-                "createdAt": "date",
-                "username": "string",
-                "email": "string",
-                "emailVerified": "boolean",
-                "authData": "object",
-                "profile": "*Profile"
-            },
-            {
                 "_id": "_Session",
                 "objectId": "string",
                 "updatedAt": "date",
