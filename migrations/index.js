@@ -18,8 +18,7 @@ function run(scripts, index) {
         console.info(`Migrations are up to date.`);
         return;
     }
-
-    if (!migrationsUp.indexOf(migrationsNames[i])) {
+    if (migrationsUp.indexOf(migrationsNames[i]) > -1) {
         run(scripts, ++i);
 
     } else {

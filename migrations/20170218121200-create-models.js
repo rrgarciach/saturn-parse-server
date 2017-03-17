@@ -8,6 +8,7 @@ module.exports.up = () => {
 
         MongoClient.connect(CONFIG.PARSE_SERVER.DATABASE_URL, (err, db) => {
             assert.equal(null, err);
+
             insertModelDocuments(db, () => {
                 db.close();
             });
