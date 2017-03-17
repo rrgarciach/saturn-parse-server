@@ -38,7 +38,7 @@ function run(scripts, index) {
 
 module.exports = function () {
     let query = new Parse.Query('Migration');
-    query.find()
+    query.find({useMasterKey: true})
         .then(_migrations => {
             migrationsUp = _migrations.map(item => {
                 return item.get('script');
